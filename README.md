@@ -50,11 +50,13 @@ This needs a controlled comparison using the same model endpoint, workspace and 
 
 ### B. Persistent slot state removes repeated body prefill
 
-llama.cpp can save and restore slot state. If a 100K-plus body restores far faster than it prefills, this is the strongest near-term primitive we have found.
+Persistent Qwen3.8 slot state is now proven on Tiercel. The stock runtime reported a successful restore but silently reprocessed the full hybrid prompt because recurrent checkpoints were missing.
 
-The first experiment is deliberately narrow. It measures snapshot size, save time, restore time, appended-tail latency and correctness before any OpenClaw integration.
+Backporting merged llama.cpp PR [#26004](https://github.com/ggml-org/llama.cpp/pull/26004) restored those checkpoints. In a controlled 9,110-token test, the fixed runtime reused 7,062 tokens, processed only the 2,050-token checkpoint tail and reduced wall time from about 21 seconds to 5.1 seconds. The reuse survived a full server restart, output remained identical and DFlash2 accepted both drafted tokens.
 
-See [the Tiercel slot experiment brief](docs/research/tiercel-slot-save-restore-codex-brief.md).
+The remaining gate is direct 100K-plus measurement of snapshot size, restore latency and checkpoint-tail scaling.
+
+See [the controlled result](docs/research/tiercel-slot-checkpoint-backport-results.md), [the sanitized finding](docs/findings/2026-10-30-slot-checkpoint-backport.md) and [the Tiercel Qwen3.8 + DFlash2 implementation](https://github.com/LeoStehlik/qwen3.8-27b-strix-halo-dflash2).
 
 ### C. Cloud hardware could compile the body
 
@@ -70,8 +72,8 @@ The proposed compiler creates ordered segments, hashes their exact token form an
 
 ## Research order
 
-1. Prove same-process slot save and restore.
-2. Prove restore after service restart.
+1. Prove same-process slot save and restore. **Passed at 9K scale.**
+2. Prove restore after service restart. **Passed at 9K scale.**
 3. Compare cold OpenCode and OpenClaw request composition.
 4. Prove deterministic stable-prefix assembly with a disposable fixture.
 5. Restore that fixture before one local OpenClaw session.
@@ -98,6 +100,6 @@ The full sequence, promotion gates and stop conditions live in the [research pla
 
 ## Status
 
-Research only. No OpenClaw implementation has been selected.
+Research only. No OpenClaw integration has been selected.
 
-The current best candidate for a large win is persistent KV restoration of a deterministic base body. It still has to survive measurement on the real machine.
+Persistent Qwen3.8 KV restoration is proven on Tiercel at 9K scale. The next gates are deterministic Agent Body assembly and a 100K-plus restore benchmark.

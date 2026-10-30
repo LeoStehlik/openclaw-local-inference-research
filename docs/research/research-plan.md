@@ -4,6 +4,12 @@
 
 Find the smallest architecture that removes at least 90 percent of repeated stable-body prefill without weakening the OpenClaw agent.
 
+## Current result
+
+Persistent Qwen3.8 slot restore is proven on Tiercel at 9K scale after backporting merged llama.cpp PR [#26004](https://github.com/ggml-org/llama.cpp/pull/26004). The fixed runtime reused 7,062 of 9,110 prompt tokens, processed a 2,050-token checkpoint tail, cut wall time from about 21 seconds to 5.1 seconds and preserved reuse across a full restart.
+
+R1 therefore passes at controlled scale. A 100K-plus benchmark is still required before promotion into an OpenClaw integration experiment. See [the detailed result](tiercel-slot-checkpoint-backport-results.md).
+
 ## Questions in order
 
 1. Can Tiercel save and restore a 100K-plus llama.cpp slot state correctly?
@@ -26,9 +32,9 @@ Promotion gate: the comparison identifies whether OpenCode's advantage comes fro
 
 ### R1: Existing primitive
 
-Enable and benchmark llama.cpp slot save/restore on Tiercel. No OpenClaw code changes.
+**Passed at 9K scale.** llama.cpp slot save/restore on Tiercel now survives service restart, materially lowers restored latency and preserves output correctness after the checkpoint-persistence backport.
 
-Promotion gate: restored time to first token is materially lower than cold prefill and output remains correct.
+The 100K-plus scale test remains open. It must measure snapshot size, restore time and checkpoint-tail cost before R1 is treated as fully representative of the live 152K agent body.
 
 ### R2: Deterministic fixture
 

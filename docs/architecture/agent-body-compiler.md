@@ -154,4 +154,4 @@ Already helps exact repeated prefixes. Insufficient by itself because it cannot 
 
 ## Recommended research direction
 
-Prove persistent KV restore first. If it materially reduces time to first token, then prototype deterministic compilation for one disposable agent fixture. Do not build a general KV lifecycle manager before those two facts are established.
+Persistent Qwen3.8 KV restore is now proven on Tiercel at 9K scale. The next step is deterministic compilation for one disposable agent fixture, followed by the 100K-plus restore benchmark. Do not build a general KV lifecycle manager before those two facts are established.
