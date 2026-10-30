@@ -14,6 +14,7 @@ Find the smallest architecture that removes at least 90 percent of repeated stab
 6. Can OpenClaw produce an identical stable prefix across two new sessions?
 7. How much of the 152K live request is genuinely stable body, session history, memory hydration, tools and runtime material?
 8. What belongs in prepared KV, proactive retrieval or the live tail?
+9. Is a llama.cpp slot snapshot portable across matched CUDA and Vulkan deployments, allowing cloud prefill and local decode?
 
 ## Iterations
 
@@ -44,6 +45,10 @@ Promotion gate: reduced uncached tail with no material regression against the fu
 ### R5: Lifecycle and scheduling
 
 Only after R1 to R4, design protection, session affinity, eviction and concurrency policy.
+
+### Parallel hypothesis after R1: cloud-built base state
+
+If local save/restore passes, test state portability in increasing order of distance: same process, restart, second local process, different backend, then a temporary self-controlled cloud CUDA worker. Do not attempt live WAN KV transfer before offline snapshot portability is proven.
 
 ## Stop conditions
 

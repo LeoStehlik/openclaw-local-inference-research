@@ -32,6 +32,7 @@ The research question is therefore:
 2. [Tiercel slot save/restore Codex brief](docs/research/tiercel-slot-save-restore-codex-brief.md)
 3. [Research plan](docs/research/research-plan.md)
 4. [Decision: preserve the body, change its loading lifecycle](docs/decisions/0001-preserve-agent-body.md)
+5. [Cloud prefill, local decode hypothesis](docs/research/cloud-prefill-local-decode-hypothesis.md)
 
 ## Current hypothesis
 
