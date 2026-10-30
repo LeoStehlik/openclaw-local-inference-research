@@ -102,15 +102,15 @@ Repeat the exact Phase 2 fixture:
 5. Verify deterministic output, DFlash drafted/accepted counts, acceptance ratio, decode throughput and absence of drafter resynchronisation errors.
 6. Confirm the current packaged binary still runs unchanged after the test.
 
-### Phase 6: PR
+### Phase 6: land the branch (PR optional)
+
+The branch is pushed to Leo's own fork `LeoStehlik/llama.cpp` and that is the permanent home of this fix. Leo has decided not to open a PR against Nathan's fork, so do not open one there and do not open one against upstream `ggml-org/llama.cpp`.
 
 Only after all acceptance criteria pass:
 
-1. Push the clean branch to an authorised fork.
-2. Open a PR against the verified source target branch, expected to be `Nathanw1014/llama.cpp:strix-halo-vulkan`.
-3. Keep the PR narrowly framed as a backport of merged upstream llama.cpp PR #26004.
-4. Include base/head SHAs, upstream merge SHA, conflict adaptations, red/green Tiercel evidence, source test results and residual risks.
-5. Do not publish a new packaged release in this task. Temporary lab wiring needed for proof is allowed and must be reverted or committed separately.
+1. Confirm the clean branch is pushed to `LeoStehlik/llama.cpp` and record the head SHA.
+2. If Leo asks for a reviewable PR, open it inside his own fork only (for example against `LeoStehlik/llama.cpp:strix-halo-vulkan`), framed as a backport of merged upstream llama.cpp PR #26004, with base/head SHAs, upstream merge SHA, conflict adaptations, red/green Tiercel evidence, source test results and residual risks.
+3. Do not publish a new packaged release in this task. Temporary lab wiring needed for proof is allowed and must be reverted or committed separately.
 
 ## Acceptance criteria
 
@@ -142,9 +142,9 @@ Candidate output remains correct and deterministic. Draft acceptance and decode 
 
 The known-good runtime and model files remain intact. Any temporary service or configuration change is documented, and the original runtime can be restored with the tested rollback command.
 
-### AC8: PR is reviewable
+### AC8: the branch is reviewable in Leo's fork
 
-The PR targets the verified source branch, links upstream #26004, contains exact-head proof and has no unrelated changes.
+The branch is pushed to `LeoStehlik/llama.cpp`, links upstream #26004, contains exact-head proof and has no unrelated changes. A PR is optional and, if opened, targets Leo's own fork only.
 
 ## Constraints
 
@@ -156,7 +156,8 @@ The PR targets the verified source branch, links upstream #26004, contains exact
 - Do not commit model files, slot snapshots, generated binaries or private prompt material.
 - Preserve at least 20 GiB free disk space.
 - Treat slot snapshots as sensitive and remove disposable snapshots after testing.
-- Stop before PR creation if the source target is ambiguous, the branch is dirty, the fix cannot be isolated, or any AC fails.
+- Stop before pushing or opening any PR if the source target is ambiguous, the branch is dirty, the fix cannot be isolated, or any AC fails.
+- Never open a PR against `Nathanw1014/llama.cpp` or `ggml-org/llama.cpp`.
 
 ## Non-goals
 
@@ -164,7 +165,7 @@ The PR targets the verified source branch, links upstream #26004, contains exact
 - Changing the router, OpenClaw or Agent Body design.
 - Running the full 150K OpenClaw prompt before the 8K proof passes.
 - Reimplementing a different checkpoint format.
-- Opening a second PR against upstream `ggml-org/llama.cpp`.
+- Opening any PR against `Nathanw1014/llama.cpp` or upstream `ggml-org/llama.cpp`.
 
 ## Deliver
 
@@ -174,13 +175,9 @@ The PR targets the verified source branch, links upstream #26004, contains exact
 - Source test/build results.
 - Tiercel in-process and restart results.
 - DFlash2 correctness and performance result.
-- PR URL, title and body if all gates pass.
+- Fork branch name and head SHA in `LeoStehlik/llama.cpp`.
 - Residual risks and the next separate step for packaging/deployment.
-
-Suggested PR title:
-
-`server: backport persistent slot checkpoints from upstream #26004`
 
 ## LAST: status
 
-Mark the task done only after the PR is opened or a concrete stop condition is reached. Report the PR URL or blocker, exact tested head, final lab state, tested rollback and next smallest step.
+Mark the task done once the branch is pushed to Leo's fork with all gates passed, or a concrete stop condition is reached. Report the branch head SHA or blocker, exact tested head, final lab state, tested rollback and next smallest step.
