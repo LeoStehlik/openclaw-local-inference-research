@@ -18,6 +18,12 @@ Find the smallest architecture that removes at least 90 percent of repeated stab
 
 ## Iterations
 
+### R0: OpenCode versus OpenClaw request composition
+
+Run a controlled cold and warm comparison against the same local model. Account for injected context, cached input, uncached input, time to first token and output generation separately.
+
+Promotion gate: the comparison identifies whether OpenCode's advantage comes from a smaller cold request, better cache continuity or both.
+
 ### R1: Existing primitive
 
 Enable and benchmark llama.cpp slot save/restore on Tiercel. No OpenClaw code changes.
