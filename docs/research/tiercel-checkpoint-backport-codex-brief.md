@@ -6,7 +6,7 @@ Mark the task working as: `Backport merged llama.cpp slot-checkpoint persistence
 
 ## Confidence gate
 
-Before starting, ask clarifying questions until you are 95% confident you have identified the correct source repository, target branch, build route and PR destination. Do not modify the running Tiercel service or packaged deployment repository while resolving those facts.
+Before starting, ask clarifying questions until you are 95% confident you have identified the correct source repository, target branch, build route and PR destination. Preserve a known-good runtime, configuration copy and rollback command before changing the Tiercel lab service.
 
 ## Task
 
@@ -52,13 +52,13 @@ Read the source repository's root and nearest scoped `AGENTS.md` and contributio
 4. Prove whether the target already contains `033df86b` with `git merge-base --is-ancestor`.
 5. Inspect PR #26004 state through the GitHub API and confirm it is merged.
 6. Create a fresh branch and isolated worktree from the current target branch. Suggested branch: `fix/slot-checkpoint-persistence`.
-7. Keep all builds and long tests in tmux. Do not reuse or overwrite the packaged runtime directory.
+7. Keep all builds and long tests in tmux. Preserve the packaged runtime as the known-good rollback target.
 
 If the target already contains the fix, do not cherry-pick it. Reproduce the failure and identify why the packaged build differs.
 
 ### Phase 2: reproduce the stock failure
 
-Use the existing packaged Tiercel runtime on a disposable localhost port or during a bounded idle window. Do not change the systemd service.
+Use the existing packaged Tiercel runtime as the red baseline. Tiercel is an experimental workbench, so the service may be stopped, restarted or temporarily repointed after its current runtime, configuration and rollback command are captured.
 
 Run the deterministic approximately 8K-token Qwen3.8 Q4 test from the corrected slot-save brief:
 
@@ -91,7 +91,7 @@ Stop on unexplained test failure. Do not weaken or remove upstream tests to make
 
 ### Phase 5: Tiercel behavioral proof
 
-Run the candidate binary from the isolated build directory on a disposable localhost port. Do not install it or restart production.
+Run the candidate binary from the isolated build directory. It may replace the active lab process temporarily, provided the known-good runtime remains intact and rollback is tested afterward.
 
 Repeat the exact Phase 2 fixture:
 
@@ -110,7 +110,7 @@ Only after all acceptance criteria pass:
 2. Open a PR against the verified source target branch, expected to be `Nathanw1014/llama.cpp:strix-halo-vulkan`.
 3. Keep the PR narrowly framed as a backport of merged upstream llama.cpp PR #26004.
 4. Include base/head SHAs, upstream merge SHA, conflict adaptations, red/green Tiercel evidence, source test results and residual risks.
-5. Do not update the packaged runtime or deployment repo in this task.
+5. Do not publish a new packaged release in this task. Temporary lab wiring needed for proof is allowed and must be reverted or committed separately.
 
 ## Acceptance criteria
 
@@ -138,9 +138,9 @@ On the candidate Tiercel binary, `cache_n` covers nearly the full saved prefix a
 
 Candidate output remains correct and deterministic. Draft acceptance and decode throughput show no unexplained regression or resynchronisation failure.
 
-### AC7: production remains untouched
+### AC7: the lab remains recoverable
 
-The installed runtime, systemd service, model files and production configuration are unchanged.
+The known-good runtime and model files remain intact. Any temporary service or configuration change is documented, and the original runtime can be restored with the tested rollback command.
 
 ### AC8: PR is reviewable
 
@@ -149,7 +149,7 @@ The PR targets the verified source branch, links upstream #26004, contains exact
 ## Constraints
 
 - Work in an isolated source worktree and disposable server process.
-- Do not modify, replace or restart the production Tiercel service.
+- Tiercel is a lab machine. Restarting or temporarily repointing its service is allowed after capturing the known-good state and rollback.
 - Do not edit OpenClaw configuration.
 - Do not change models, quantisation, context, KV types, DFlash2 settings or benchmark fixture between red and green tests.
 - Bind candidate endpoints to localhost only.
@@ -183,4 +183,4 @@ Suggested PR title:
 
 ## LAST: status
 
-Mark the task done only after the PR is opened or a concrete stop condition is reached. Report the PR URL or blocker, exact tested head, production-untouched status and next smallest step.
+Mark the task done only after the PR is opened or a concrete stop condition is reached. Report the PR URL or blocker, exact tested head, final lab state, tested rollback and next smallest step.
